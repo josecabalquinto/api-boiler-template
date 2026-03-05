@@ -1,134 +1,167 @@
 <p align="center">
-<a href="https://laravel.com" target="_blank">
-<img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
-</a>
+  <a href="https://laravel.com" target="_blank">
+    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+  </a>
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/Laravel-API%20Boilerplate-red" alt="Laravel API Boilerplate">
-<img src="https://img.shields.io/badge/PHP-%5E8.2-blue" alt="PHP Version">
-<img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-%5E8.2-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
+  <img src="https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/Pattern-User–Policy-3b82f6?style=for-the-badge" alt="Pattern">
 </p>
 
-# Laravel API Boilerplate (User–Policy Pattern)
-
-This repository provides a **Laravel API Boilerplate Template** designed to accelerate backend development and enforce a clean and maintainable architecture.
-
-The project follows **Laravel best practices for RESTful API development**, including structured controllers, request validation, resource responses, and policy-based authorization.
-
-It implements the **User–Policy authorization pattern**, allowing fine-grained access control using Laravel Policies while keeping controllers clean and business logic organized.
-
-This boilerplate serves as a **solid starting point for building secure, scalable APIs** for web or mobile applications.
+<h1 align="center">Laravel API Boilerplate</h1>
+<p align="center">A clean, scalable starting point for building secure RESTful APIs with the <strong>User–Policy authorization pattern</strong>.</p>
 
 ---
 
-# Features
+## ✨ Features
 
-- RESTful API architecture
-- Standardized API response format
-- **User–Policy authorization pattern**
-- Authentication-ready setup
-- Request validation using Form Requests
-- API Resources for response transformation
-- Clean and scalable folder structure
-- Environment-based configuration
-- Easy integration with frontend frameworks or mobile apps
+| Feature | Description |
+|---|---|
+| 🔐 **User–Policy Auth** | Fine-grained authorization using Laravel Policies |
+| 📦 **Structured Architecture** | Controllers, Services, Requests, Resources, Policies |
+| ✅ **Form Request Validation** | Dedicated request classes for clean validation |
+| 🔄 **API Resources** | Standardized, consistent response transformation |
+| 🚀 **Auth-Ready Setup** | Authentication scaffolding included out of the box |
+| ⚙️ **Environment Config** | Clean `.env`-based configuration |
+| 📱 **Frontend-Agnostic** | Works seamlessly with any frontend or mobile client |
 
 ---
 
-# Architecture Overview
+## 🏗️ Architecture Overview
 
-The project follows a structured approach to keep the codebase scalable and maintainable.
+```
 app/
 ├── Http/
-│ ├── Controllers/
-│ ├── Requests/
-│ └── Resources/
+│   ├── Controllers/     # Handle HTTP requests, delegate to services
+│   ├── Requests/        # Validate incoming API data
+│   └── Resources/       # Transform models into API responses
 │
-├── Models/
+├── Models/              # Eloquent models
 │
-├── Policies/
+├── Policies/            # User–Policy authorization rules
 │
-├── Services/
+├── Services/            # Business logic layer
 │
-└── Providers/
+└── Providers/           # Service providers and bindings
+```
 
 ### Key Components
 
-**Controllers**
-- Handle incoming HTTP requests
-- Delegate business logic to services
-
-**Requests**
-- Validate incoming API data
-
-**Services**
-- Contain business logic
-- Keep controllers thin and clean
-
-**Policies**
-- Implement **User–Policy pattern** for authorization
-
-**Resources**
-- Transform models into standardized API responses
+- **Controllers** — Thin, focused on request/response. Business logic lives in services.
+- **Requests** — Dedicated Form Request classes handle all validation rules.
+- **Services** — Encapsulate business logic, keeping controllers clean.
+- **Policies** — Centralized authorization logic via the User–Policy pattern.
+- **Resources** — Consistent, versioned API response transformation.
 
 ---
 
-# Authorization (User–Policy Pattern)
+## 🔐 Authorization: User–Policy Pattern
 
-Authorization is handled using **Laravel Policies**, allowing clear and maintainable permission rules.
+Authorization is handled using **Laravel Policies**, providing clear, maintainable, and testable permission rules.
 
-Example:
-
+**Defining a policy:**
 ```php
-public function update(User $user, Post $post)
+// app/Policies/PostPolicy.php
+
+public function update(User $user, Post $post): bool
 {
     return $user->id === $post->user_id;
 }
-Controller usage:
+```
 
-$this->authorize('update', $post);
+**Using it in a controller:**
+```php
+// app/Http/Controllers/PostController.php
 
-This approach ensures:
+public function update(UpdatePostRequest $request, Post $post)
+{
+    $this->authorize('update', $post);
 
-Clean controller logic
+    return new PostResource($this->postService->update($post, $request->validated()));
+}
+```
 
-Centralized permission rules
+**Benefits of this pattern:**
+- ✔ Clean, readable controller logic
+- ✔ Centralized and reusable permission rules
+- ✔ Easy to extend for roles and permissions
+- ✔ Fully testable in isolation
 
-Easy role and permission management
+---
 
-Getting Started
-1. Clone the repository
-git clone https://github.com/your-repo/laravel-api-boilerplate.git
-2. Install dependencies
-composer install
-3. Setup environment
-cp .env.example .env
-php artisan key:generate
-4. Run migrations
-php artisan migrate
-5. Start development server
-php artisan serve
-Example API Response Format
+## 📬 Standardized API Response Format
+
+All endpoints return a consistent JSON structure:
+
+**Success:**
+```json
 {
   "success": true,
   "message": "Request successful",
-  "data": {}
+  "data": { }
 }
-Use Cases
+```
+
+**Error:**
+```json
+{
+  "success": false,
+  "message": "Unauthorized",
+  "errors": { }
+}
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-repo/laravel-api-boilerplate.git
+cd laravel-api-boilerplate
+```
+
+### 2. Install dependencies
+```bash
+composer install
+```
+
+### 3. Set up environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+### 4. Configure your database
+Update `.env` with your database credentials, then run:
+```bash
+php artisan migrate
+```
+
+### 5. Start the development server
+```bash
+php artisan serve
+```
+
+Your API will be available at `http://localhost:8000`.
+
+---
+
+## 💡 Use Cases
 
 This boilerplate is ideal for:
 
-SaaS platforms
+- 🏢 **SaaS platforms** — Multi-tenant APIs with role-based access
+- 📱 **Mobile app backends** — Clean, versioned API endpoints
+- 🧩 **Microservices** — Lightweight, focused service APIs
+- 🖥️ **Admin dashboards** — Secure, policy-driven data access
+- 🌐 **API-first applications** — Headless backends for any frontend
 
-Mobile app backends
+---
 
-Microservices
+## 📄 License
 
-Admin dashboards
-
-API-first applications
-
-License
-
-This project is open-sourced software licensed under the MIT license.
+This project is open-sourced software licensed under the [MIT license](LICENSE).
