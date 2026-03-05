@@ -120,7 +120,7 @@ All endpoints return a consistent JSON structure:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-repo/laravel-api-boilerplate.git
+git clone https://github.com/josecabalquinto/api-boiler-template.git
 cd laravel-api-boilerplate
 ```
 
